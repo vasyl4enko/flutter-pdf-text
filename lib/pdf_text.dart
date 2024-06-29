@@ -44,28 +44,6 @@ class PDFDoc {
     return await fromFile(File(path), password: password);
   }
 
-  /// Creates a [PDFDoc] object with a URL.
-  /// Optionally, takes a [password] for encrypted PDF documents.
-  /// It downloads the PDF file located in the given URL and saves it
-  /// in the app's temporary directory.
-  static Future<PDFDoc> fromURL(String url, {String password = ""}) async {
-    File file;
-    try {
-      String tempDirPath = (await getTemporaryDirectory()).path;
-
-      String filePath = join(tempDirPath, _TEMP_DIR_NAME,
-          url.split("/").last.split(".").first + ".pdf");
-
-      file = File(filePath);
-      file.createSync(recursive: true);
-      file.writeAsBytesSync(
-          (await ClientProvider().client.get(Uri.parse(url))).bodyBytes);
-    } on Exception catch (e) {
-      return Future.error(e);
-    }
-    return await fromFile(file, password: password);
-  }
-
   /// Gets the page of the document at the given page number.
   PDFPage pageAt(int pageNumber) => _pages[pageNumber - 1];
 
